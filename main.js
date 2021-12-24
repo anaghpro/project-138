@@ -20,7 +20,14 @@ var ball = {
     dx:3,
     dy:3
 }
-
+rightWristY = 0
+rightWristX = 0
+scoreRightWrist = 0
+game_status  = '';
+function preload() {
+ball_touch_paddel = loadSound('ball_touch_paddel.wav') 
+missed = loadSound('missed.wav'); 
+}
 function setup(){
   var canvas =  createCanvas(700,600);
   canvas.parent('canvas');
@@ -33,8 +40,24 @@ function setup(){
   poseNet.on('pose',gotPoses);
   
 }
+function modelLoaded(){
+  console.log('Model Loaded!!!!!')
+}
 
+function gotPoses(results){
+  if(results.length > 0){
+    rightWristX = results[0].pose.rightWrist.x;
+    rightWristY = results[0].pose.rightWrist.y;
+    console.log("eXs = " + rightWristX +", rightWristY = " + rightWristY);
+  scoreRightWrist = results[0].pose.keypoints[10].score;
+  console.log(scoreRightWrist);
+  }
+} 
 
+function startGame() {
+  game_status = "start";
+  document.getElementById('status').innerHTML = "Game Is Loading";
+}
 function draw(){
 
  background(0); 
@@ -58,6 +81,8 @@ function draw(){
    rect(paddle1X,paddle1Y,paddle1,paddle1Height,100);
    
    
+
+
     //pc computer paddle
     fill("#FFA500");
     stroke("#FFA500");
